@@ -1,0 +1,126 @@
+# Moon project configuration for the web app.
+# Docs: https://moonrepo.dev/docs/config/project
+
+$schema: "https://moonrepo.dev/schemas/project.json"
+
+# ---------------------------------------------------------------------------
+# Project metadata
+# ---------------------------------------------------------------------------
+project:
+  name: "web"
+  description: "Recalla frontend – React + Vite + TanStack Router/Query"
+  channel: "#frontend"
+  owner: "frontend-team"
+
+# ---------------------------------------------------------------------------
+# Tags – used for filtering with `moon run :build --tags frontend`
+# ---------------------------------------------------------------------------
+tags:
+  - "frontend"
+  - "react"
+  - "vite"
+
+# ---------------------------------------------------------------------------
+# Tasks
+# ---------------------------------------------------------------------------
+tasks:
+  # ── Development ────────────────────────────────────────────────────────────
+  dev:
+    command: "pnpm dev"
+    options:
+      cache: false # never cached, always re-runs
+      persistent: true # long-running process (dev server)
+      runInCI: false
+    env:
+      PORT: "3000"
+
+  # ── Build ──────────────────────────────────────────────────────────────────
+  build:
+    command: "pnpm build"
+    inputs:
+      - "src/**/*"
+      - "public/**/*"
+      - "server.mjs"
+      - "vite.config.ts"
+      - "tsconfig.json"
+      - "package.json"
+      - "biome.json"
+    outputs:
+      - ".output/**/*"
+    options:
+      runInCI: true
+
+  # ── Preview (serve the production build locally) ───────────────────────────
+  preview:
+    command: "pnpm preview"
+    deps:
+      - "~:build"
+    options:
+      cache: false
+      persistent: true
+      runInCI: false
+
+  # ── Type-check ─────────────────────────────────────────────────────────────
+  typecheck:
+    command: "pnpm exec tsc --noEmit"
+    inputs:
+      - "src/**/*.{ts,tsx}"
+      - "tsconfig.json"
+      - "package.json"
+    options:
+      runInCI: true
+
+  # ── Lint ───────────────────────────────────────────────────────────────────
+  lint:
+    command: "pnpm lint"
+    inputs:
+      - "src/**/*.{ts,tsx,js,jsx}"
+      - "biome.json"
+    options:
+      runInCI: true
+
+  # ── Format ─────────────────────────────────────────────────────────────────
+  format:
+    command: "pnpm format"
+    inputs:
+      - "src/**/*.{ts,tsx,js,jsx,css,json}"
+      - "biome.json"
+    options:
+      runInCI: false
+
+  # ── Check (lint + format combined via Biome) ───────────────────────────────
+  check:
+    command: "pnpm check"
+    inputs:
+      - "src/**/*.{ts,tsx,js,jsx,css,json}"
+      - "biome.json"
+    options:
+      runInCI: true
+
+  # ── Test ───────────────────────────────────────────────────────────────────
+  test:
+    command: "pnpm test"
+    inputs:
+      - "src/**/*.{ts,tsx}"
+      - "vitest.config.*"
+      - "vite.config.ts"
+    options:
+      runInCI: true
+
+  # ── CI pipeline (lint → typecheck → test → build, in dependency order) ─────
+  ci:
+    command: "noop"
+    deps:
+      - "~:check"
+      - "~:typecheck"
+      # - "~:test"
+      - "~:build"
+    options:
+      runInCI: true
+  #strorybook command
+  storybook:
+    command: "pnpm storybook"
+    inputs:
+      - "src/**/*.{ts,tsx,js,jsx}"
+    options:
+      runInCI: true
