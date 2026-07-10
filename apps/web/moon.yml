@@ -40,13 +40,13 @@ tasks:
     inputs:
       - "src/**/*"
       - "public/**/*"
-      - "server.mjs"
+
       - "vite.config.ts"
       - "tsconfig.json"
       - "package.json"
       - "biome.json"
     outputs:
-      - ".output/**/*"
+      - "dist/**/*"
     options:
       runInCI: true
 
@@ -109,7 +109,7 @@ tasks:
 
   # ── CI pipeline (lint → typecheck → test → build, in dependency order) ─────
   ci:
-    command: "noop"
+    command: "echo Web CI completed"
     deps:
       - "~:check"
       - "~:typecheck"

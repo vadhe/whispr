@@ -6,17 +6,17 @@ layer: "application"
 
 project:
   name: "api"
-  description: "template"
+  description: "whispr api"
 
 tasks:
   build:
-    command: "go build -o ./bin/web-api ./cmd/api"
+    command: "go build -o ./bin/main ./cmd/api/main.go"
     inputs:
       - "**/*.go"
       - "go.mod"
       - "go.sum"
     outputs:
-      - "bin/web-api"
+      - "bin/main"
 
   dev:
     command: "air"
@@ -65,12 +65,9 @@ tasks:
       - "go.mod"
       - "go.sum"
   migrate-up:
-    command: "go run ./cmd/migrate up"
+    command: "goose -dir migrations sqlite3 internal/database/whispr.db up"
     options:
       cache: false
-    inputs:
-      - "migrations/**/*.sql"
-      - "cmd/migrate/main.go"
 
   migrate-up-test:
     command: "go run ./cmd/migrate up"
@@ -83,108 +80,6 @@ tasks:
       - "cmd/migrate/main.go"
 
   migrate-down:
-    command: "go run ./cmd/migrate down"
-    options:
-      cache: false
-    inputs:
-      - "migrations/**/*.sql"
-      - "cmd/migrate/main.go"
-
-  migrate-down-test:
-    command: "go run ./cmd/migrate down"
-    options:
-      cache: false
-    env:
-      APP_ENV: "test"
-    inputs:
-      - "migrations/**/*.sql"
-      - "cmd/migrate/main.go"
-
-  migrate-reset:
-    command: "go run ./cmd/migrate reset"
-    options:
-      cache: false
-    inputs:
-      - "migrations/**/*.sql"
-      - "cmd/migrate/main.go"
-
-  migrate-reset-test:
-    command: "go run ./cmd/migrate reset"
-    options:
-      cache: false
-    env:
-      APP_ENV: "test"
-    inputs:
-      - "migrations/**/*.sql"
-      - "cmd/migrate/main.go"
-
-  migrate-status:
-    command: "go run ./cmd/migrate status"
-    options:
-      cache: false
-    inputs:
-      - "migrations/**/*.sql"
-      - "cmd/migrate/main.go"
-
-  migrate-status-test:
-    command: "go run ./cmd/migrate status"
-    options:
-      cache: false
-    env:
-      APP_ENV: "test"
-    inputs:
-      - "migrations/**/*.sql"
-      - "cmd/migrate/main.go"
-
-  migrate-create:
-    command: "go run ./cmd/migrate create"
-    options:
-      cache: false
-    inputs:
-      - "migrations/**/*.sql"
-
-  seed:
-    command: "go run ./cmd/seed"
-    options:
-      cache: false
-    inputs:
-      - "cmd/seed/main.go"
-
-  seed-test:
-    command: "go run ./cmd/seed"
-    options:
-      cache: false
-    env:
-      APP_ENV: "test"
-    inputs:
-      - "cmd/seed/main.go"
-
-  up:
-    command: "docker-compose up -d"
-    options:
-      cache: false
-    inputs:
-      - "docker-compose.yaml"
-
-  down:
-    command: "docker-compose down"
-    options:
-      cache: false
-    inputs:
-      - "docker-compose.yaml"
-  get:
-    command: "go get"
-    options:
-      cache: false
-  swag:
-    command: swag
-    args:
-      - init
-      - -g
-      - cmd/api/main.go
-      - -o
-      - cmd/api/docs
-      - --parseInternal
-      - --parseDependency
+    command: "goose -dir migrations sqlite3 internal/database/whispr.db down"
     options:
       cache: false
