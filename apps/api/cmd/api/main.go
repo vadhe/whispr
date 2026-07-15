@@ -7,7 +7,9 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 	httpSwagger "github.com/swaggo/http-swagger"
 	_ "github.com/vadhe/whispr/docs"
+	"github.com/vadhe/whispr/internal/database"
 	dbConnection "github.com/vadhe/whispr/internal/database"
+	"github.com/vadhe/whispr/internal/users"
 )
 
 // @title           Swagger Example API
@@ -39,40 +41,17 @@ func main() {
 		fmt.Println(err)
 		return
 	}
+	dbQuery := database.New(db)
+	userRepo := users.NewRepository(dbQuery)
+	userService := users.NewService(userRepo)
+	usersHandler := users.NewHandler(userService)
+
 	defer db.Close()
 
-	var sqliteVersion string
-
-	err = db.QueryRow("SELECT name FROM users LIMIT 1").Scan(&sqliteVersion)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(sqliteVersion)
-
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello, World!")
-	})
+	mux.HandleFunc("POST /api/v1/register", usersHandler.Register)
 	mux.HandleFunc("/swagger/", httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8080/swagger/doc.json"), //The url pointing to API definition
 	))
-	mux.HandleFunc("/accounts", handleRoot)
 
 	http.ListenAndServe(":8080", mux)
-}
-
-// ListAccounts godoc
-// @Summary      List accounts
-// @Description  get accounts
-// @Tags         accounts
-// @Accept       json
-// @Produce      json
-// @Param        q    query     string  false  "name search by q"  Format(email)
-// @Success      200
-// @Failure      400
-// @Failure      404
-// @Failure      500
-// @Router       /accounts [get]
-func handleRoot(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello, World!")
 }

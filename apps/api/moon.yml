@@ -65,7 +65,7 @@ tasks:
       - "go.mod"
       - "go.sum"
   migrate-up:
-    command: "goose -dir migrations sqlite3 internal/database/whispr.db up"
+    command: "goose -dir database/migrations sqlite3 internal/database/whispr.db up"
     options:
       cache: false
 
@@ -80,6 +80,14 @@ tasks:
       - "cmd/migrate/main.go"
 
   migrate-down:
-    command: "goose -dir migrations sqlite3 internal/database/whispr.db down"
+    command: "goose -dir database/migrations sqlite3 internal/database/whispr.db down"
+    options:
+      cache: false
+  sqlc:
+    command: "sqlc generate -f ./sqlc.yaml"
+    options:
+      cache: false
+  swag:
+    command: "swag init --generalInfo cmd/api/main.go --dir . --parseInternal --output docs"
     options:
       cache: false

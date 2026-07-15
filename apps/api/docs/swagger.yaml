@@ -1,4 +1,14 @@
 basePath: /api/v1
+definitions:
+  users.RegisterRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
@@ -16,17 +26,18 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
-  /accounts:
-    get:
+  /register:
+    post:
       consumes:
       - application/json
-      description: get accounts
+      description: Register a new user account
       parameters:
-      - description: name search by q
-        format: email
-        in: query
-        name: q
-        type: string
+      - description: Register request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/users.RegisterRequest'
       produces:
       - application/json
       responses:
@@ -38,9 +49,9 @@ paths:
           description: Not Found
         "500":
           description: Internal Server Error
-      summary: List accounts
+      summary: Register a new user
       tags:
-      - accounts
+      - auth
 securityDefinitions:
   BasicAuth:
     type: basic
