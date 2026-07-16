@@ -1,0 +1,10 @@
+version: "2"
+sql:
+  - engine: "sqlite"
+    queries: "database/queries"
+    schema: "database/migrations"
+    gen:
+      go:
+        # package: "tutorial"
+        out: "internal/database"
+        # sql_package: "pgx/v5"
