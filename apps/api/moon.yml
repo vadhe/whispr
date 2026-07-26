@@ -91,3 +91,11 @@ tasks:
     command: "swag init --generalInfo cmd/api/main.go --dir . --parseInternal --output docs"
     options:
       cache: false
+  security:
+    command: "gosec ./..."
+    options:
+      cache: false
+  staticcheck:
+    command: "staticcheck ./..."
+    options:
+      cache: false
