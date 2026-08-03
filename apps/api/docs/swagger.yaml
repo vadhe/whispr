@@ -9,6 +9,29 @@ definitions:
       username:
         type: string
     type: object
+  utils.ErrorDetail:
+    properties:
+      code:
+        type: string
+      details:
+        items:
+          $ref: '#/definitions/utils.ErrorItem'
+        type: array
+      message:
+        type: string
+    type: object
+  utils.ErrorItem:
+    properties:
+      field:
+        type: string
+      message:
+        type: string
+    type: object
+  utils.ErrorResponse:
+    properties:
+      error:
+        $ref: '#/definitions/utils.ErrorDetail'
+    type: object
 externalDocs:
   description: OpenAPI
   url: https://swagger.io/resources/open-api/
@@ -49,6 +72,8 @@ paths:
           description: Not Found
         "500":
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
       summary: Register a new user
       tags:
       - auth

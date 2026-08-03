@@ -1,53 +1,63 @@
-name: api CI
+name: API CI
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    branches: [main]
 
 jobs:
-  ci:
-    name: Lint, Test & Build
+  tests:
+    name: Tests
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.26.5"
 
       - name: Setup moon and proto toolchain
         uses: moonrepo/setup-toolchain@v0
         with:
           auto-install: true
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
+      - name: Run Tests
+        run: moon run :test-coverage
+
+      - name: Install gosec
+        run: go install github.com/securego/gosec/v2/cmd/gosec@latest
+
+      - name: Run gosec
+        run: moon run :gosec
+  style:
+    name: Style
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
         with:
-          go-version-file: apps/api/go.mod
-          cache-dependency-path: apps/api/go.sum
+          fetch-depth: 0
 
-      - name: Install goose
-        run: go install github.com/pressly/goose/v3/cmd/goose@latest
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: "1.26.5"
 
-      - name: Run moon CI (lint)
-        run: moon ci api:lint
+      - name: Setup moon and proto toolchain
+        uses: moonrepo/setup-toolchain@v0
+        with:
+          auto-install: true
 
-      - name: Run moon CI (test)
-        run: moon ci api:format
+      - name: Run Style
+        run: moon run :format
 
-      - name: Run moon CI (build)
-        run: moon ci api:tidy
+      - name: Install staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
 
-      - name: Run moon CI (migrate-up)
-        run: moon ci api:migrate-up
-
-      - name: Run moon CI (build)
-        run: moon ci api:build
+      - name: Run staticcheck
+        run:  moon run :staticcheck

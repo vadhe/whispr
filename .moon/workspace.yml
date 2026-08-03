@@ -15,11 +15,11 @@ vcs:
       - "moon run api:build --affected --status=staged"
       - "moon run api:lint --affected --status=staged"
       - "moon run api:format --affected --status=staged"
+      - "moon run api:test --affected --status=staged"
+      - "moon run api:staticcheck --affected --status=staged"
+      - "moon run api:gosec --affected --status=staged"
       - "moon run api:tidy --affected --status=staged"
       - "moon run web:ci --affected --status=staged"
-      # - "moon run web:test --affected --status=staged"
-      # - "moon run web:build --affected --status=staged"
-      # - "moon run web:lint --affected --status=staged"
   # The upstream version control provider, where the repository
   # source code is stored.
   # @since 1.8.0

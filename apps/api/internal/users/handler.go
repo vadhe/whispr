@@ -2,11 +2,12 @@ package users
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/vadhe/whispr/internal/database"
+	"github.com/vadhe/whispr/internal/utils"
 )
-
 
 type Handler struct {
 	service *Service
@@ -26,7 +27,7 @@ func NewHandler(service *Service) *Handler {
 // @Success      200
 // @Failure      400
 // @Failure      404
-// @Failure      500
+// @Failure      500 {object} utils.ErrorResponse
 // @Router       /register [post]
 func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	var req RegisterRequest
@@ -34,14 +35,27 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-    newUser := database.CreateUserParams {
-    	Username: req.Username,
-    	Email:    req.Email,
-    	Password: req.Password,
-    	Link:     req.Username,
-    }
+
+	newUser := database.CreateUserParams{
+		Username: req.Username,
+		Email:    req.Email,
+		Password: req.Password,
+		Link:     req.Username,
+	}
 	if _, err := h.service.Register(r.Context(), newUser); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		var details []utils.ErrorItem
+		switch {
+		case errors.Is(err, ErrEmailExists):
+			details = []utils.ErrorItem{{Field: "email", Message: ErrEmailExists.Error()}}
+		case errors.Is(err, ErrUsernameExists):
+			details = []utils.ErrorItem{{Field: "username", Message: ErrUsernameExists.Error()}}
+		case errors.Is(err, ErrLinkExists):
+			details = []utils.ErrorItem{{Field: "link", Message: ErrLinkExists.Error()}}
+		default:
+			details = []utils.ErrorItem{{Field: "internal_server_error", Message: err.Error()}}
+		}
+
+		utils.RespondWithError(w, http.StatusInternalServerError, "internal_server_error", err.Error(), details)
 		return
 	}
 

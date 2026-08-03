@@ -3,3 +3,4 @@
 .moon/cache
 .moon/docker
 tmp
+coverage.out
