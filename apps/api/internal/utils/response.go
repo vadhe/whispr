@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -44,5 +45,9 @@ func RespondWithError(w http.ResponseWriter, code int, errorCode string, message
 		},
 	}
 
-	json.NewEncoder(w).Encode(response)
+	if err := json.NewEncoder(w).Encode(response); err != nil {
+		log.Printf("Gagal melakukan encode JSON: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 }

@@ -1,13 +1,17 @@
 package midleware
 
 import (
-	"log"
+	"log/slog"
 	"net/http"
 )
 
 func MidlewareLogger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		next.ServeHTTP(w, r)
-		log.Printf("%s %s %s", r.Method, r.URL.Path, r.RemoteAddr)
+		slog.Info("http request",
+			slog.String("method", r.Method),
+			slog.String("path", r.URL.Path),
+			slog.String("remote_addr", r.RemoteAddr),
+		)
 	})
 }

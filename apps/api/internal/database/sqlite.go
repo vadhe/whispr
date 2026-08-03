@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -20,7 +21,9 @@ func NewSQLiteConnection(cfg Config) (*sql.DB, error) {
 	}
 
 	if err := db.Ping(); err != nil {
-		db.Close()
+		if closeErr := db.Close(); closeErr != nil {
+			log.Printf("failed to close database after failed ping: %v", closeErr)
+		}
 		return nil, fmt.Errorf("failed to ping database: %w", err)
 	}
 

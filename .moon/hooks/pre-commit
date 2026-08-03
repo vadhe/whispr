@@ -13,7 +13,7 @@ moon run api:lint --affected --status=staged
 moon run api:format --affected --status=staged
 moon run api:test --affected --status=staged
 moon run api:staticcheck --affected --status=staged
-moon run api:security --affected --status=staged
+moon run api:gosec --affected --status=staged
 moon run api:tidy --affected --status=staged
 moon run web:ci --affected --status=staged
 

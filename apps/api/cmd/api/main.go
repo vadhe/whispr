@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 	httpSwagger "github.com/swaggo/http-swagger"
 	_ "github.com/vadhe/whispr/docs"
-	"github.com/vadhe/whispr/internal/database"
 	dbConnection "github.com/vadhe/whispr/internal/database"
 	"github.com/vadhe/whispr/internal/users"
 )
@@ -41,7 +41,7 @@ func main() {
 		fmt.Println(err)
 		return
 	}
-	dbQuery := database.New(db)
+	dbQuery := dbConnection.New(db)
 	userRepo := users.NewRepository(dbQuery)
 	userService := users.NewService(userRepo)
 	usersHandler := users.NewHandler(userService)
@@ -52,6 +52,15 @@ func main() {
 	mux.HandleFunc("/swagger/", httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8080/swagger/doc.json"), //The url pointing to API definition
 	))
-
-	http.ListenAndServe(":8080", mux)
+	server := &http.Server{
+		Addr:         ":8080",
+		Handler:      mux,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  120 * time.Second,
+	}
+	err = server.ListenAndServe()
+	if err != nil {
+		fmt.Println(err)
+	}
 }

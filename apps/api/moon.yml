@@ -37,15 +37,14 @@ tasks:
       - "go.sum"
 
   test-coverage:
-    command: "go test -coverprofile=coverage.out -covermode=atomic ./..."
+    command: "go test ./..."
     env:
       APP_ENV: "test"
     inputs:
       - "**/*.go"
       - "go.mod"
       - "go.sum"
-    outputs:
-      - "coverage.out"
+
 
   lint:
     command: "go vet ./..."
@@ -55,7 +54,7 @@ tasks:
       - "go.sum"
 
   format:
-    command: "gofmt -w ."
+    command: "test -z $(go fmt ./...)"
     inputs:
       - "**/*.go"
 
@@ -91,7 +90,7 @@ tasks:
     command: "swag init --generalInfo cmd/api/main.go --dir . --parseInternal --output docs"
     options:
       cache: false
-  security:
+  gosec:
     command: "gosec ./..."
     options:
       cache: false
