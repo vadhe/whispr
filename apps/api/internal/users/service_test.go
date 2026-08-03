@@ -63,7 +63,7 @@ func TestCreateUser(t *testing.T) {
 		}
 
 		user, err := userService.Register(context.Background(), database.CreateUserParams{
-			Username: tc.userName,
+			UserName: tc.userName,
 			Email:    tc.email,
 			Password: tc.password,
 		})

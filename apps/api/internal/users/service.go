@@ -19,7 +19,7 @@ func (s *Service) Register(ctx context.Context, req database.CreateUserParams) (
 	if req.Email == "" {
 		return &database.User{}, ErrInvalidEmail
 	}
-	if req.Username == "" {
+	if req.UserName == "" {
 		return &database.User{}, ErrUsernameRequired
 	}
 	if req.Password == "" {

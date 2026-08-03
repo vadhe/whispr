@@ -37,7 +37,7 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newUser := database.CreateUserParams{
-		Username: req.Username,
+		UserName: req.Username,
 		Email:    req.Email,
 		Password: req.Password,
 		Link:     req.Username,
