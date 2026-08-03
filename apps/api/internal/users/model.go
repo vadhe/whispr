@@ -9,7 +9,11 @@ type RegisterRequest struct {
 }
 
 var (
-	ErrEmailExists    = errors.New("email already exists")
-	ErrUsernameExists = errors.New("username already exists")
-	ErrLinkExists     = errors.New("link already exists")
+	ErrEmailExists      = errors.New("email already exists")
+	ErrUsernameExists   = errors.New("username already exists")
+	ErrLinkExists       = errors.New("link already exists")
+	ErrUserRequired     = errors.New("user required")
+	ErrInvalidEmail     = errors.New("invalid email")
+	ErrUsernameRequired = errors.New("username required")
+	ErrPasswordRequired = errors.New("password required")
 )

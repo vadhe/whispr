@@ -9,30 +9,25 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as AppLayoutRouteRouteImport } from './routes/_appLayout/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AppLayoutSettingsRouteImport } from './routes/_appLayout/settings'
-import { Route as AppLayoutProfileRouteImport } from './routes/_appLayout/profile'
-import { Route as AppLayoutInboxRouteImport } from './routes/_appLayout/inbox'
+import { Route as AppLayoutRouteRouteImport } from './routes/_appLayout/route'
 import { Route as AppLayoutComposeRouteImport } from './routes/_appLayout/compose'
+import { Route as AppLayoutInboxRouteImport } from './routes/_appLayout/inbox'
+import { Route as AppLayoutProfileRouteImport } from './routes/_appLayout/profile'
+import { Route as AppLayoutSettingsRouteImport } from './routes/_appLayout/settings'
 
-const AppLayoutRouteRoute = AppLayoutRouteRouteImport.update({
-  id: '/_appLayout',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AppLayoutSettingsRoute = AppLayoutSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AppLayoutRouteRoute,
+const AppLayoutRouteRoute = AppLayoutRouteRouteImport.update({
+  id: '/_appLayout',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AppLayoutProfileRoute = AppLayoutProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+const AppLayoutComposeRoute = AppLayoutComposeRouteImport.update({
+  id: '/compose',
+  path: '/compose',
   getParentRoute: () => AppLayoutRouteRoute,
 } as any)
 const AppLayoutInboxRoute = AppLayoutInboxRouteImport.update({
@@ -40,9 +35,14 @@ const AppLayoutInboxRoute = AppLayoutInboxRouteImport.update({
   path: '/inbox',
   getParentRoute: () => AppLayoutRouteRoute,
 } as any)
-const AppLayoutComposeRoute = AppLayoutComposeRouteImport.update({
-  id: '/compose',
-  path: '/compose',
+const AppLayoutProfileRoute = AppLayoutProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AppLayoutRouteRoute,
+} as any)
+const AppLayoutSettingsRoute = AppLayoutSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AppLayoutRouteRoute,
 } as any)
 
@@ -91,13 +91,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_appLayout': {
-      id: '/_appLayout'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AppLayoutRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -105,18 +98,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_appLayout/settings': {
-      id: '/_appLayout/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AppLayoutSettingsRouteImport
-      parentRoute: typeof AppLayoutRouteRoute
+    '/_appLayout': {
+      id: '/_appLayout'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppLayoutRouteRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_appLayout/profile': {
-      id: '/_appLayout/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AppLayoutProfileRouteImport
+    '/_appLayout/compose': {
+      id: '/_appLayout/compose'
+      path: '/compose'
+      fullPath: '/compose'
+      preLoaderRoute: typeof AppLayoutComposeRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
     '/_appLayout/inbox': {
@@ -126,11 +119,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppLayoutInboxRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
-    '/_appLayout/compose': {
-      id: '/_appLayout/compose'
-      path: '/compose'
-      fullPath: '/compose'
-      preLoaderRoute: typeof AppLayoutComposeRouteImport
+    '/_appLayout/profile': {
+      id: '/_appLayout/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AppLayoutProfileRouteImport
+      parentRoute: typeof AppLayoutRouteRoute
+    }
+    '/_appLayout/settings': {
+      id: '/_appLayout/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppLayoutSettingsRouteImport
       parentRoute: typeof AppLayoutRouteRoute
     }
   }
