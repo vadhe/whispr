@@ -24,7 +24,7 @@ func NewHandler(service *Service) *Handler {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Success      200
+// @Success      200 {object} UserResponse
 // @Failure      400
 // @Failure      404
 // @Failure      500 {object} utils.ErrorResponse
@@ -42,7 +42,9 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		Password: req.Password,
 		Link:     req.Username,
 	}
-	if _, err := h.service.Register(r.Context(), newUser); err != nil {
+
+	user, err := h.service.Register(r.Context(), newUser)
+	if err != nil {
 		var details []utils.ErrorItem
 		switch {
 		case errors.Is(err, ErrEmailExists):
@@ -59,5 +61,11 @@ func (h *Handler) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.WriteHeader(http.StatusCreated)
+	userResponse := UserResponse{
+		ID:       user.ID,
+		Username: user.UserName,
+		Email:    user.Email,
+		Link:     user.Link,
+	}
+	utils.RespondWithJSON(w, http.StatusCreated, userResponse)
 }
