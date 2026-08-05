@@ -9,6 +9,17 @@ definitions:
       username:
         type: string
     type: object
+  users.UserResponse:
+    properties:
+      email:
+        type: string
+      id:
+        type: integer
+      link:
+        type: string
+      username:
+        type: string
+    type: object
   utils.ErrorDetail:
     properties:
       code:
@@ -66,6 +77,8 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            $ref: '#/definitions/users.UserResponse'
         "400":
           description: Bad Request
         "404":

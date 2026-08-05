@@ -4,3 +4,4 @@
 .moon/docker
 tmp
 coverage.out
+node_modules

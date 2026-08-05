@@ -5,22 +5,22 @@
 package database
 
 import (
-	"time"
+	"database/sql"
 )
 
 type Message struct {
 	ID        int64
 	UserID    int64
 	Content   string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt sql.NullTime
+	UpdatedAt sql.NullTime
 }
 
 type User struct {
 	ID        int64
-	Username  string
+	UserName  string
 	Email     string
 	Link      string
 	Password  string
-	CreatedAt time.Time
+	CreatedAt sql.NullTime
 }
