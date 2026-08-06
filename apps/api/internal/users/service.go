@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/vadhe/whispr/internal/database"
+	"github.com/vadhe/whispr/internal/utils"
 )
 
 type Service struct {
@@ -15,7 +16,6 @@ func NewService(repo *Repository) *Service {
 }
 
 func (s *Service) Register(ctx context.Context, req database.CreateUserParams) (*database.User, error) {
-	data, err := s.repo.CreateUser(ctx, req)
 	if req.Email == "" {
 		return &database.User{}, ErrInvalidEmail
 	}
@@ -25,8 +25,16 @@ func (s *Service) Register(ctx context.Context, req database.CreateUserParams) (
 	if req.Password == "" {
 		return &database.User{}, ErrPasswordRequired
 	}
+	hashedPassword, err := utils.HashPassword(req.Password)
 	if err != nil {
 		return &database.User{}, err
 	}
+	req.Password = hashedPassword
+
+	data, err := s.repo.CreateUser(ctx, req)
+	if err != nil {
+		return &database.User{}, err
+	}
+
 	return data, nil
 }
