@@ -49,6 +49,7 @@ func main() {
 	defer db.Close()
 
 	mux.HandleFunc("POST /api/v1/register", usersHandler.Register)
+	mux.HandleFunc("POST /api/v1/login", usersHandler.Login)
 	mux.HandleFunc("/swagger/", httpSwagger.Handler(
 		httpSwagger.URL("http://localhost:8080/swagger/doc.json"), //The url pointing to API definition
 	))
