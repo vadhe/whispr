@@ -73,6 +73,12 @@ func TestRespondWithJSON(t *testing.T) {
 			data:     nil,
 			expected: http.StatusNoContent,
 		},
+		{
+			name:     "Error: 500 Internal Server Error with data",
+			code:     http.StatusInternalServerError,
+			data:     map[string]string{"error": "internal server error"},
+			expected: http.StatusInternalServerError,
+		},
 	}
 
 	for _, tt := range tc {
