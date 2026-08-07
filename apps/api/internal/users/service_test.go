@@ -9,6 +9,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/vadhe/whispr/internal/database"
+	"github.com/vadhe/whispr/internal/utils"
 )
 
 func TestCreateUser(t *testing.T) {
@@ -54,11 +55,15 @@ func TestCreateUser(t *testing.T) {
 
 	for _, tc := range test {
 		if tc.expected == nil {
+			hash, err := utils.HashPassword(tc.password)
+			if err != nil {
+				t.Fatalf("error: %s", err)
+			}
 			rows := sqlmock.NewRows([]string{"id", "username", "email", "link", "password", "created_at"}).
-				AddRow(1, "vadhe", "aldyvadhe@gmail.com", "", "password", time.Now())
+				AddRow(1, "vadhe", "aldyvadhe@gmail.com", "vadhe", hash, time.Now())
 
 			mock.ExpectQuery("INSERT INTO users").
-				WithArgs("vadhe", "aldyvadhe@gmail.com", "password", "").
+				WithArgs("vadhe", "aldyvadhe@gmail.com", sqlmock.AnyArg(), "vadhe").
 				WillReturnRows(rows)
 		}
 
@@ -66,6 +71,7 @@ func TestCreateUser(t *testing.T) {
 			UserName: tc.userName,
 			Email:    tc.email,
 			Password: tc.password,
+			Link:     tc.userName,
 		})
 		assert.Equal(t, tc.expected, err)
 		assert.NotNil(t, user)

@@ -1,0 +1,53 @@
+package utils
+
+import (
+	"errors"
+	"os"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+)
+
+var ErrInvalidUserID = errors.New("invalid user id")
+var ErrLoadEnv = errors.New("failed to load env")
+var ErrInvalidToken = errors.New("invalid token")
+
+func GenerateToken(userID int64) (string, error) {
+	JWT_SECRET_KEY := os.Getenv("JWT_SECRET_KEY")
+	if JWT_SECRET_KEY == "" {
+		return "", ErrLoadEnv
+	}
+	if userID == 0 {
+		return "", ErrInvalidUserID
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"userID": userID,
+		"exp":    time.Now().Add(time.Minute * 15).Unix(),
+	})
+	tokenString, err := token.SignedString([]byte(JWT_SECRET_KEY))
+	if err != nil {
+		return "", err
+	}
+	return tokenString, nil
+}
+
+func VerifyToken(tokenString string) error {
+	JWT_SECRET_KEY := os.Getenv("JWT_SECRET_KEY")
+	if JWT_SECRET_KEY == "" {
+		return ErrLoadEnv
+	}
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
+		return []byte(JWT_SECRET_KEY), nil
+	})
+	if err != nil {
+		return ErrInvalidToken
+	}
+
+	if !token.Valid {
+		return ErrInvalidToken
+	}
+
+	return nil
+}

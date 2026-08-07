@@ -4,3 +4,7 @@ INSERT INTO users (
 ) VALUES (
     ?1, ?2, ?3, ?4
 ) RETURNING *;
+
+
+-- name: GetUserByUsername :one
+SELECT id, user_name, password, email, link FROM users WHERE user_name = ?1;

@@ -4,10 +4,13 @@ go 1.26.5
 
 require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
+	github.com/golang-jwt/jwt/v5 v5.3.1
+	github.com/joho/godotenv v1.5.1
 	github.com/mattn/go-sqlite3 v1.14.47
 	github.com/stretchr/testify v1.11.1
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.6
+	golang.org/x/crypto v0.54.0
 )
 
 require (

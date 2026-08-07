@@ -40,3 +40,11 @@ func (r *Repository) CreateUser(ctx context.Context, arg database.CreateUserPara
 	}
 	return &user, nil
 }
+
+func (r *Repository) GetUserByUsername(ctx context.Context, username string) (*database.GetUserByUsernameRow, error) {
+	user, err := r.db.GetUserByUsername(ctx, username)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}

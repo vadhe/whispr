@@ -1,5 +1,12 @@
 basePath: /api/v1
 definitions:
+  users.LoginUserParams:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
   users.RegisterRequest:
     properties:
       email:
@@ -60,6 +67,42 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Login request
+        in: body
+        name: req
+        required: true
+        schema:
+          $ref: '#/definitions/users.LoginUserParams'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/users.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+      tags:
+      - auth
   /register:
     post:
       consumes:
@@ -81,8 +124,16 @@ paths:
             $ref: '#/definitions/users.UserResponse'
         "400":
           description: Bad Request
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
         "404":
           description: Not Found
+          schema:
+            $ref: '#/definitions/utils.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
