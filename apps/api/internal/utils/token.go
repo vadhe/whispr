@@ -10,6 +10,7 @@ import (
 
 var ErrInvalidUserID = errors.New("invalid user id")
 var ErrLoadEnv = errors.New("failed to load env")
+var ErrInvalidToken = errors.New("invalid token")
 
 func GenerateToken(userID string) (string, error) {
 	JWT_SECRET_KEY := os.Getenv("JWT_SECRET_KEY")
@@ -29,4 +30,24 @@ func GenerateToken(userID string) (string, error) {
 		return "", err
 	}
 	return tokenString, nil
+}
+
+func VerifyToken(tokenString string) error {
+	JWT_SECRET_KEY := os.Getenv("JWT_SECRET_KEY")
+	if JWT_SECRET_KEY == "" {
+		return ErrLoadEnv
+	}
+
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
+		return []byte(JWT_SECRET_KEY), nil
+	})
+	if err != nil {
+		return ErrInvalidToken
+	}
+
+	if !token.Valid {
+		return ErrInvalidToken
+	}
+
+	return nil
 }
