@@ -39,23 +39,27 @@ func (s *Service) Register(ctx context.Context, req database.CreateUserParams) (
 	return data, nil
 }
 
-func (s *Service) Login(ctx context.Context, req LoginUserParams) (*database.GetUserByUsernameRow, error) {
+func (s *Service) Login(ctx context.Context, req LoginUserParams) (UserLoginResponse, error) {
 	if req.Username == "" {
-		return &database.GetUserByUsernameRow{}, ErrUsernameRequired
+		return UserLoginResponse{}, ErrUsernameRequired
 	}
 	if req.Password == "" {
-		return &database.GetUserByUsernameRow{}, ErrPasswordRequired
+		return UserLoginResponse{}, ErrPasswordRequired
 	}
 	user, err := s.repo.GetUserByUsername(ctx, req.Username)
 	if err != nil {
-		return &database.GetUserByUsernameRow{}, err
+		return UserLoginResponse{}, err
 	}
 
 	if user == nil {
-		return &database.GetUserByUsernameRow{}, ErrInvalidCredentials
+		return UserLoginResponse{}, ErrInvalidCredentials
 	}
 	if !utils.CheckPasswordHash(req.Password, user.Password) {
-		return &database.GetUserByUsernameRow{}, ErrInvalidCredentials
+		return UserLoginResponse{}, ErrInvalidCredentials
 	}
-	return user, nil
+	token, err := utils.GenerateToken(user.ID)
+	if err != nil {
+		return UserLoginResponse{}, err
+	}
+	return UserLoginResponse{ID: user.ID, Username: user.UserName, Email: user.Email, Link: user.Link, Token: token}, nil
 }

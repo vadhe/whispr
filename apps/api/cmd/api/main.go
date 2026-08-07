@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/joho/godotenv"
 	_ "github.com/mattn/go-sqlite3"
 	httpSwagger "github.com/swaggo/http-swagger"
 	_ "github.com/vadhe/whispr/docs"
@@ -32,6 +33,11 @@ import (
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	var mux = http.NewServeMux()
 	db, err := dbConnection.NewSQLiteConnection(dbConnection.Config{
 		DriverName: "sqlite3",

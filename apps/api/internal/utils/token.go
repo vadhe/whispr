@@ -12,12 +12,12 @@ var ErrInvalidUserID = errors.New("invalid user id")
 var ErrLoadEnv = errors.New("failed to load env")
 var ErrInvalidToken = errors.New("invalid token")
 
-func GenerateToken(userID string) (string, error) {
+func GenerateToken(userID int64) (string, error) {
 	JWT_SECRET_KEY := os.Getenv("JWT_SECRET_KEY")
 	if JWT_SECRET_KEY == "" {
 		return "", ErrLoadEnv
 	}
-	if userID == "" {
+	if userID == 0 {
 		return "", ErrInvalidUserID
 	}
 

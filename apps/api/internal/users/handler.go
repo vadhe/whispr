@@ -90,7 +90,6 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	user, err := h.service.Login(r.Context(), req)
 	if err != nil {
 
-		println("ojojojjojoo")
 		switch {
 		case errors.Is(err, ErrInvalidCredentials):
 			utils.RespondWithError(w, http.StatusUnauthorized, "invalid_credentials", "Invalid credentials", nil)
@@ -104,11 +103,12 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userResponse := UserResponse{
+	userResponse := UserLoginResponse{
 		ID:       user.ID,
-		Username: user.UserName,
+		Username: user.Username,
 		Email:    user.Email,
 		Link:     user.Link,
+		Token:    user.Token,
 	}
 	utils.RespondWithJSON(w, http.StatusOK, userResponse)
 }

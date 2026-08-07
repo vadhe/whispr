@@ -9,25 +9,25 @@ import (
 func TestGenerateToken(t *testing.T) {
 	tc := []struct {
 		name          string
-		userID        string
+		userID        int64
 		expectedToken string
 		expectedError error
 	}{
 		{
 			name:          "valid user ID",
-			userID:        "test-user-id",
+			userID:        123,
 			expectedToken: "",
 			expectedError: nil,
 		},
 		{
 			name:          "empty user ID",
-			userID:        "",
+			userID:        0,
 			expectedToken: "",
 			expectedError: ErrInvalidUserID,
 		},
 		{
 			name:          "empty JWT_SECRET_KEY",
-			userID:        "test-user-id",
+			userID:        123,
 			expectedToken: "",
 			expectedError: ErrLoadEnv,
 		},
@@ -53,7 +53,7 @@ func TestGenerateToken(t *testing.T) {
 
 func TestVerifyToken(t *testing.T) {
 	t.Setenv("JWT_SECRET_KEY", "!_CoPk=oO*qjTCD6bm_D*w]tlWey![dMJ-WnxQ*-JU9")
-	token, err := GenerateToken("test-user-id")
+	token, err := GenerateToken(123)
 	assert.NoError(t, err)
 	assert.NotEmpty(t, token)
 
